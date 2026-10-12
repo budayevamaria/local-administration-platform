@@ -1,10 +1,10 @@
 :root {
-  --sidebar: rgba(88, 154, 240, 0.6);
+  --sidebar: #ffffffff;
   --sidebar-text: #091850;
   --header: rgba(77, 166, 255, 0.2);
   --page: #ffffff;
   --card: #ffffff;
-  --border: #e4e7eb;
+  --border: #b0b1b1;
   --text: #17181a;
   --muted: #6b7280;
   --star: #f5b400;
@@ -95,7 +95,7 @@ select {
   display: flex;
   align-items: center;
   gap: 14px;
-  color: #091850;
+  color: #000000;
   font-size: 18px;
   font-weight: 500;
   padding: 8px 6px;
@@ -109,7 +109,7 @@ select {
 }
 
 .side-nav a.active {
-  color: #091850;
+  color: #000000;
   font-weight: 700;
 }
 
@@ -164,7 +164,7 @@ select {
   border-radius: 14px;
   box-shadow: var(--shadow);
   position: sticky;
-  top: 24px;
+  top: 30px;
   z-index: 100;
   margin: 24px 36px 15px 0;
   display: flex;
@@ -178,7 +178,7 @@ select {
 .topbar-btn {
   padding: 10px;
   text-align: center;
-  background: var(--sidebar);
+  background: var(--header);
   border-radius: 10px;
   font-size: 14px;
   color: var(--sidebar-text);
