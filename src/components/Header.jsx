@@ -3,7 +3,7 @@ import { useApp } from "../context/AppContext";
 import { IconMenu, IconPlus, IconSearch } from "./Icons";
 
 export function Header({ onMenu, onNavigate }) {
-  const { currentUser, search, setSearch } = useApp();
+  const { currentUser, authReady, search, setSearch, logout } = useApp();
   const navigate = useNavigate();
 
   return (
@@ -33,24 +33,33 @@ export function Header({ onMenu, onNavigate }) {
             New post
           </Link>
         )}
-        {/* {currentUser ? ( */}
-        <div className="topbar-user"></div>
-        <Link to="/profile" className="user-info">
-          <img src={currentUser?.avatar} alt="" />
-          <span>{currentUser?.name}</span>
-        </Link>
-        {/* ) : ( */}
-
-        <Link to="/profile" className="avatar-link" title={currentUser.name}>
-          {/* <img
-            src={currentUser.headerPhoto || currentUser.cover || currentUser.avatar}
-            alt={currentUser.name}
-          /> */}
-        </Link>
-        <Link to="/login" className="ghost-btn">
-          Log out
-        </Link>
-        {/* )} */}
+        {authReady && currentUser ? (
+          <>
+            <Link to="/profile" className="user-info">
+              <img src={currentUser.avatar || "/images/resident.jpg"} alt="" />
+              <span>{currentUser.name}</span>
+            </Link>
+            <button
+              type="button"
+              className="ghost-btn"
+              onClick={() => {
+                logout();
+                navigate("/login");
+              }}
+            >
+              Log out
+            </button>
+          </>
+        ) : authReady ? (
+          <>
+            <Link to="/login" className="ghost-btn">
+              Log in
+            </Link>
+            <Link to="/register" className="primary-btn">
+              Register
+            </Link>
+          </>
+        ) : null}
       </div>
       <div className="topbar-btn">
         <Link to="/profile">Manage account</Link>

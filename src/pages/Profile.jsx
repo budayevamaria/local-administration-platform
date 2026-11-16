@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useApp } from "../context/AppContext";
 
 export function Profile() {
-  const { currentUser, users, cities, ratings, userStats, logout, switchUser, updateUser } =
-    useApp();
-  const navigate = useNavigate();
+  const { currentUser, authReady, cities, ratings, userStats, updateUser } = useApp();
   const [editing, setEditing] = useState(false);
+
+  if (!authReady) {
+    return <div className="empty">Checking your session…</div>;
+  }
 
   if (!currentUser) {
     return (
@@ -18,14 +20,14 @@ export function Profile() {
 
   const city = cities.find(c => c.id === currentUser.cityId);
   const ratedCount = ratings.filter(r => r.userId === currentUser.id).length;
-  const stats = userStats[currentUser.id];
-  const cityName = city?.name || "Almaty";
+  const stats = userStats[currentUser.id] || { average: 0, posts: 0 };
+  const cityName = currentUser.cityName || city?.name || "Almaty";
 
   return (
     <div className="page">
       <section className="profile-banner">
         <img className="cover" src={currentUser.cover || "/images/cover.jpg"} alt="" />
-        <img className="profile-photo" src={currentUser.avatar} alt="" />
+        <img className="profile-photo" src={currentUser.avatar || "/images/resident.jpg"} alt="" />
         <div className="profile-meta">
           <div>
             <h1>{currentUser.name}</h1>

@@ -1,43 +1,37 @@
-<<<<<<< HEAD
 # Represent
 
-React frontend for a civic platform where local administration representatives publish completed work and residents rate, comment, and follow those results.
+A social platform for sharing the work of local administration representatives and collecting resident feedback.
 
-## Run
+## Stack
+
+- Frontend: React, CSS
+- Backend: Node.js, Express.js, Mongoose
+- Database: MongoDB
+
+## Frontend
 
 ```bash
 npm install
 npm run dev
 ```
 
-The UI uses in-memory mock data (no backend). Demo accounts are available from Profile and Login:
+The UI currently uses in-memory mock data. Demo accounts:
 
-- Resident: `aida@represent.kz` / `resident`
+- Resident: `resident@gmail.com` / `resident`
 - Akim: `akim@represent.kz` / `akim`
 - Admin: `admin@represent.kz` / `admin`
-=======
-# local-administration-platform
 
-## Description
+## Backend (Week 1)
 
-A social platform for sharing information about the work of local administration representatives and collecting feedback from residents.
+MongoDB database: `represent`
 
-Residents can view posts, rate the work, and leave comments. Administration representatives can create posts and respond to feedback.
+```bash
+cd server
+copy .env.example .env
+npm install
+npm run seed
+npm run dev
+```
 
-## Stack
-
-### Frontend
-- React
-- CSS
-
-### Backend
-- Node.js
-- Express.js
-- JWT
-- bcrypt
-
-### Database
-- MongoDB
-- Mongoose
-
->>>>>>> 88d1b7c741d165a20f94049f719740ca03bb9640
+- `GET http://localhost:5000/api/health` — connection status
+- `GET http://localhost:5000/api/db` — collection counts and sample documents

@@ -1,4 +1,5 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { api, getToken, setToken, toClientUser } from "../api";
 import {
   bookmarksSeed,
   // comments as commentsSeed,
@@ -28,46 +29,67 @@ export function AppProvider({ children }) {
   const [notifications, setNotifications] = useState(notificationsSeed);
   const [cities, setCities] = useState(citiesSeed);
   const [bookmarks, setBookmarks] = useState(bookmarksSeed);
-  const [currentUserId, setCurrentUserId] = useState("u-resident");
+  const [currentUser, setCurrentUser] = useState(null);
+  const [authReady, setAuthReady] = useState(false);
   const [search, setSearch] = useState("");
 
-  const currentUser = users.find(u => u.id === currentUserId) ?? null;
+  useEffect(() => {
+    let cancelled = false;
 
-  function login(email, password) {
-    const user = users.find(
-      u => u.email.toLowerCase() === email.trim().toLowerCase() && u.password === password
-    );
-    if (!user) return { ok: false, error: "Invalid email or password" };
-    setCurrentUserId(user.id);
-    return { ok: true };
+    async function restoreSession() {
+      if (!getToken()) {
+        if (!cancelled) setAuthReady(true);
+        return;
+      }
+
+      try {
+        const { user } = await api("/api/auth/me");
+        if (!cancelled) setCurrentUser(toClientUser(user));
+      } catch {
+        setToken(null);
+        if (!cancelled) setCurrentUser(null);
+      } finally {
+        if (!cancelled) setAuthReady(true);
+      }
+    }
+
+    restoreSession();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  async function login(email, password) {
+    try {
+      const data = await api("/api/auth/login", {
+        method: "POST",
+        body: { email, password },
+      });
+      setToken(data.token);
+      setCurrentUser(toClientUser(data.user));
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: error.message };
+    }
   }
 
-  function register({ name, email, password, cityId, district }) {
-    if (users.some(u => u.email.toLowerCase() === email.trim().toLowerCase())) {
-      return { ok: false, error: "This email is already registered" };
+  async function register({ name, email, password, cityId, district }) {
+    try {
+      const data = await api("/api/auth/register", {
+        method: "POST",
+        body: { name, email, password, cityId, district },
+      });
+      setToken(data.token);
+      setCurrentUser(toClientUser(data.user));
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: error.message };
     }
-    const user = {
-      id: uid("u"),
-      name,
-      email,
-      password,
-      role: "resident",
-      cityId,
-      district,
-      avatar: `https://i.pravatar.cc/150?u=${encodeURIComponent(email)}`,
-      bio: "New Represent resident.",
-    };
-    setUsers(prev => [...prev, user]);
-    setCurrentUserId(user.id);
-    return { ok: true };
   }
 
   function logout() {
-    setCurrentUserId(null);
-  }
-
-  function switchUser(id) {
-    setCurrentUserId(id);
+    setToken(null);
+    setCurrentUser(null);
   }
 
   function ratePost(postId, value) {
@@ -164,6 +186,7 @@ export function AppProvider({ children }) {
 
   function updateUser(id, patch) {
     setUsers(prev => prev.map(u => (u.id === id ? { ...u, ...patch } : u)));
+    setCurrentUser(prev => (prev?.id === id ? { ...prev, ...patch } : prev));
   }
 
   function addCity(name) {
@@ -233,6 +256,7 @@ export function AppProvider({ children }) {
     cities,
     bookmarks,
     currentUser,
+    authReady,
     search,
     setSearch,
     postStats,
@@ -240,7 +264,6 @@ export function AppProvider({ children }) {
     login,
     register,
     logout,
-    switchUser,
     ratePost,
     // addComment,
     // editComment,

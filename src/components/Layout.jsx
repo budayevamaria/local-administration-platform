@@ -17,13 +17,11 @@ export function Layout() {
           aria-label="Close menu"
         />
       )}
-      {/* <div className="main-col"> */}
 
       <main className="content">
         <Outlet />
       </main>
       <Header onMenu={() => setOpen(true)} />
-      {/* </div> */}
     </div>
   );
 }

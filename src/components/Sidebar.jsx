@@ -27,7 +27,6 @@ export function Sidebar({ onNavigate }) {
         <NavLink to="/notifications" onClick={onNavigate}>
           <IconBell />
           Notifications
-          {/* {unread > 0 && <span className="badge">{unread}</span>} */}
         </NavLink>
         <NavLink to="/profile" onClick={onNavigate}>
           <IconUser />

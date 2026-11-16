@@ -28,7 +28,6 @@ export default function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/activity" element={<Activity />} />
             <Route path="/posts/new" element={<CreatePost />} />
-            {/* <Route path="/posts/:postId" element={<PostDetail />} /> */}
             <Route path="/admin" element={<Admin />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
